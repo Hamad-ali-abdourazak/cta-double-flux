@@ -1,0 +1,7 @@
+body { font-family: Arial, sans-serif; }
+#controls { margin: 20px 0; }
+canvas { background: #fff; border: 1px solid #ccc; }
+.slider-group { margin: 10px 0; }
+.trend { margin-top: 20px; }
+.trend span { display: inline-block; width: 160px; }
+#horaire { margin-top: 10px; }
