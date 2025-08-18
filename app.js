@@ -4,71 +4,89 @@ let horaire = [];
 
 function drawCTASchema() {
   const canvas = document.getElementById('ctaCanvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Facteur d'agrandissement et décalage pour centrage
-  const f = 1.2;
-  const dx = 40; // Décalage horizontal vers la gauche
-  const dy = 60;
-
-  ctx.font = `bold ${20 * f}px Arial`;
-  ctx.textBaseline = "top";
-
   // Caisson principal
-  ctx.strokeStyle = 'blue';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(dx + 100*f, dy + 120*f, 500*f, 160*f);
+  ctx.fillStyle = "#f3f3f3";
+  ctx.strokeStyle = "#888";
+  ctx.lineWidth = 3;
+  ctx.fillRect(100, 100, 700, 220);
+  ctx.strokeRect(100, 100, 700, 220);
 
-  // Roue de récupération
+  // Echangeur (orange)
+  ctx.save();
+  ctx.translate(450, 210);
+  ctx.rotate(Math.PI/4);
+  ctx.fillStyle = "#ffb74d";
+  ctx.fillRect(-40, -40, 80, 80);
+  ctx.strokeStyle = "#ff9800";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(-40, -40, 80, 80);
+  ctx.restore();
+
+  // Ventilateurs
   ctx.beginPath();
-  ctx.strokeStyle = 'orange';
-  ctx.lineWidth = 2;
-  ctx.ellipse(dx + 350*f, dy + 200*f, 60*f, 40*f, 0, 0, 2 * Math.PI);
+  ctx.arc(170, 210, 28, 0, 2 * Math.PI);
+  ctx.fillStyle = "#bdbdbd";
+  ctx.fill();
+  ctx.strokeStyle = "#607d8b";
+  ctx.lineWidth = 3;
   ctx.stroke();
-  ctx.closePath();
 
-  // Registre air neuf
-  ctx.fillStyle = 'lightblue';
-  ctx.fillRect(dx + 60*f, dy + 150*f, 40*f, 100*f);
+  ctx.beginPath();
+  ctx.arc(730, 210, 28, 0, 2 * Math.PI);
+  ctx.fillStyle = "#bdbdbd";
+  ctx.fill();
+  ctx.strokeStyle = "#607d8b";
+  ctx.lineWidth = 3;
+  ctx.stroke();
 
-  // Registre air mélangé
-  ctx.fillStyle = 'lightgreen';
-  ctx.fillRect(dx + 600*f, dy + 150*f, 40*f, 100*f);
+  // Flèches de flux d'air
+  function drawArrow(x1, y1, x2, y2, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    // Tête de flèche
+    const angle = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - 15 * Math.cos(angle - 0.3), y2 - 15 * Math.sin(angle - 0.3));
+    ctx.lineTo(x2 - 15 * Math.cos(angle + 0.3), y2 - 15 * Math.sin(angle + 0.3));
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+  drawArrow(60, 210, 170, 210, "#2196f3"); 
+  drawArrow(730, 210, 840, 210, "#43a047"); 
+  drawArrow(840, 130, 730, 130, "#e53935"); 
+  drawArrow(170, 130, 60, 130, "#757575"); 
 
-  // Moteur soufflage/reprise
-  ctx.fillStyle = 'gray';
-  ctx.fillRect(dx + 180*f, dy + 260*f, 40*f, 30*f);
-  ctx.fillRect(dx + 480*f, dy + 260*f, 40*f, 30*f);
+  // Températures dynamiques
+  ctx.font = "bold 18px Arial";
+  ctx.fillStyle = "#1976d2";
+  ctx.fillText(`Air Neuf : ${tempNeuf[tempNeuf.length-1].toFixed(1)}°C`, 60, 250);
+  ctx.fillStyle = "#43a047";
+  ctx.fillText(`Air Soufflé : ${tempSouffle[tempSouffle.length-1].toFixed(1)}°C`, 700, 250);
+  ctx.fillStyle = "#e53935";
+  ctx.fillText(`Air Repris : ${tempRepris[tempRepris.length-1].toFixed(1)}°C`, 700, 120);
+}
 
-  // Vanne chaude
-  ctx.fillStyle = 'red';
-  ctx.fillRect(dx + 250*f, dy + 120*f, 20*f, 20*f);
-
-  // Vanne froide
-  ctx.fillStyle = 'blue';
-  ctx.fillRect(dx + 430*f, dy + 120*f, 20*f, 20*f);
-
-  // Textes lisibles et espacés
-  ctx.fillStyle = 'black';
-  ctx.fillText('Air Neuf', dx + 30*f, dy + 110*f);
-  ctx.fillText('Air Mélangé', dx + 600*f, dy + 110*f);
-  ctx.fillText('Moteur', dx + 170*f, dy + 295*f);
-  ctx.fillText('Moteur', dx + 470*f, dy + 295*f);
-
-  ctx.fillStyle = 'red';
-  ctx.fillText('Vanne chaude', dx + 220*f, dy + 85*f);
-
-  ctx.fillStyle = 'blue';
-  ctx.fillText('Vanne froide', dx + 410*f, dy + 85*f);
-
-  ctx.fillStyle = 'black';
-  ctx.fillText(`T° Air Neuf: ${tempNeuf[tempNeuf.length-1].toFixed(1)}°C`, dx + 30*f, dy + 260*f);
-  ctx.fillText(`T° Air Soufflé: ${tempSouffle[tempSouffle.length-1].toFixed(1)}°C`, dx + 300*f, dy + 260*f);
-  ctx.fillText(`T° Air Repris: ${tempRepris[tempRepris.length-1].toFixed(1)}°C`, dx + 520*f, dy + 260*f);
-
-  ctx.fillStyle = 'orange';
-  ctx.fillText('Roue de récupération', dx + 270*f, dy + 160*f);
+function updateCTABadges() {
+  if (document.getElementById('badge-air-neuf')) {
+    document.getElementById('badge-air-neuf').textContent =
+      `Air Neuf : ${tempNeuf[tempNeuf.length-1].toFixed(1)} °C`;
+    document.getElementById('badge-air-souffle').textContent =
+      `Air Soufflé : ${tempSouffle[tempSouffle.length-1].toFixed(1)} °C`;
+    document.getElementById('badge-air-repris').textContent =
+      `Air Repris : ${tempRepris[tempRepris.length-1].toFixed(1)} °C`;
+  }
 }
 
 function updateMoteur() {
@@ -76,6 +94,7 @@ function updateMoteur() {
   document.getElementById('moteurVal').textContent = moteur;
   simulate();
   drawCTASchema();
+  updateCTABadges();
 }
 
 function updateVannes() {
@@ -85,6 +104,7 @@ function updateVannes() {
   document.getElementById('vanneFroideVal').textContent = vanneFroide;
   simulate();
   drawCTASchema();
+  updateCTABadges();
 }
 
 function simulate() {
@@ -103,13 +123,22 @@ function simulate() {
   if (tempNeuf.length > 10) tempNeuf.shift();
   if (tempSouffle.length > 10) tempSouffle.shift();
   if (tempRepris.length > 10) tempRepris.shift();
+  updateCTABadges();
 }
 
 function afficherTendances() {
   document.getElementById('trend').style.display = 'block';
-  document.getElementById('trendNeuf').textContent = tempNeuf.map(t=>t.toFixed(1)).join(' | ');
-  document.getElementById('trendSouffle').textContent = tempSouffle.map(t=>t.toFixed(1)).join(' | ');
-  document.getElementById('trendRepris').textContent = tempRepris.map(t=>t.toFixed(1)).join(' | ');
+  const len = tempNeuf.length;
+  let rows = '';
+  for (let i = 0; i < len; i++) {
+    rows += `<tr>
+      <th scope="row">${i + 1}</th>
+      <td>${tempNeuf[i].toFixed(1)}</td>
+      <td>${tempSouffle[i].toFixed(1)}</td>
+      <td>${tempRepris[i].toFixed(1)}</td>
+    </tr>`;
+  }
+  document.getElementById('trendTableBody').innerHTML = rows;
 }
 
 function cacherTendances() {
@@ -117,23 +146,12 @@ function cacherTendances() {
 }
 
 function programmerHoraire() {
-  let debut = prompt("Entrer l'heure de début (HH:MM) :");
-  if (!debut) return;
-  let fin = prompt("Entrer l'heure de fin (HH:MM) :");
-  if (!fin) return;
-  horaire.push({debut, fin});
-  document.getElementById('horaire').textContent =
-    "Horaires programmés : " +
-    horaire.map(h => `${h.debut} - ${h.fin}`).join(', ');
+  document.getElementById('horaireInline').style.display = 'block';
 }
 
-setInterval(() => {
-  simulate();
+document.addEventListener('DOMContentLoaded', function() {
   drawCTASchema();
-}, 2000);
-
-window.onload = function() {
-  drawCTASchema();
+  updateCTABadges();
   document.getElementById('moteurVal').textContent = moteur;
   document.getElementById('vanneChaudeVal').textContent = vanneChaude;
   document.getElementById('vanneFroideVal').textContent = vanneFroide;
@@ -144,4 +162,64 @@ window.onload = function() {
   document.getElementById('btnTendances').addEventListener('click', afficherTendances);
   document.getElementById('btnFermerTendances').addEventListener('click', cacherTendances);
   document.getElementById('btnHoraire').addEventListener('click', programmerHoraire);
-};
+
+  document.getElementById('ajouterHoraire').onclick = function() {
+    const debut = document.getElementById('heureDebutInline').value;
+    const fin = document.getElementById('heureFinInline').value;
+    if (!debut || !fin) {
+      alert("Veuillez sélectionner une heure de début et de fin.");
+      return;
+    }
+    horaire.push({debut, fin});
+    let horairesTxt = `<ul class="horaire-list">` +
+      horaire.map(h => `<li><span class="icon">🕒</span> <b>${h.debut}</b> &rarr; <b>${h.fin}</b></li>`).join('') +
+      `</ul>`;
+    document.getElementById('horaire').innerHTML =
+      "<b>Horaires programmés :</b>" + horairesTxt;
+    document.getElementById('heureDebutInline').value = '';
+    document.getElementById('heureFinInline').value = '';
+    document.getElementById('horaireInline').style.display = 'none';
+  };
+
+  // Onglets sidebar
+  const tabCTA = document.getElementById('tab-cta');
+  const tabConforts = document.getElementById('tab-conforts');
+  const contentCTA = document.getElementById('content-cta');
+  const contentConforts = document.getElementById('content-conforts');
+  if (tabCTA && tabConforts && contentCTA && contentConforts) {
+    tabCTA.onclick = function(e) {
+      e.preventDefault();
+      contentCTA.style.display = '';
+      contentConforts.style.display = 'none';
+      tabCTA.classList.add('active');
+      tabConforts.classList.remove('active');
+      drawCTASchema();
+    };
+    tabConforts.onclick = function(e) {
+      e.preventDefault();
+      contentCTA.style.display = 'none';
+      contentConforts.style.display = '';
+      tabConforts.classList.add('active');
+      tabCTA.classList.remove('active');
+    };
+  }
+
+  // Ventilo-convecteur
+  const btnVC = document.getElementById('vc-appliquer');
+  if (btnVC) {
+    btnVC.onclick = function() {
+      const vitesse = document.getElementById('vc-vitesse').value;
+      const consigne = document.getElementById('vc-consigne').value;
+      const res = document.getElementById('vc-resultat');
+      res.style.display = '';
+      res.textContent = `Ventilo-convecteur réglé sur vitesse ${vitesse} et consigne ${consigne}°C.`;
+    };
+  }
+});
+
+// Simulation automatique
+setInterval(() => {
+  simulate();
+  drawCTASchema();
+  updateCTABadges();
+}, 2000);

@@ -1,7 +1,64 @@
-body { font-family: Arial, sans-serif; }
-#controls { margin: 20px 0; }
-canvas { background: #fff; border: 1px solid #ccc; }
-.slider-group { margin: 10px 0; }
-.trend { margin-top: 20px; }
-.trend span { display: inline-block; width: 160px; }
-#horaire { margin-top: 10px; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(120deg, #e3f2fd 0%, #f8fafc 100%);
+  min-height: 100vh;
+}
+h1 {
+  margin: 30px 0 20px 0;
+  text-align: center;
+  color: #1976d2;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+#controls {
+  margin: 20px auto 0 auto;
+  max-width: 900px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0001;
+  padding: 20px 30px 10px 30px;
+}
+.slider-group {
+  margin: 10px 0;
+}
+#horaire {
+  margin-top: 10px;
+}
+.horaire-list {
+  margin-top: 10px;
+  padding-left: 0;
+  list-style: none;
+}
+.horaire-list li {
+  background: #f3f6fa;
+  border-left: 4px solid #1976d2;
+  margin-bottom: 6px;
+  padding: 8px 12px;
+  font-size: 1.1em;
+  color: #222;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px #0001;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.horaire-list li .icon {
+  font-size: 1.2em;
+  color: #1976d2;
+}
+canvas {
+  background: #fff;
+  border: 1px solid #ccc;
+  display: block;
+  margin: 0 auto 20px auto;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px #0001;
+}
+.trend {
+  max-width: 900px;
+  margin: 30px auto 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #0001;
+  padding: 20px 30px 20px 30px;
+}
