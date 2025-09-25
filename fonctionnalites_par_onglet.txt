@@ -1,0 +1,76 @@
+# Liste des fonctionnalités par onglet
+
+## Onglet CTA (Centrale de Traitement d’Air)
+- Visualisation de l’état général (ON/OFF)
+- Affichage dynamique des badges d’état (air neuf, soufflé, repris)
+- Contrôle du moteur de soufflage (slider 0-10V)
+- Contrôle de la vanne chaude (slider)
+- Contrôle de la vanne froide (slider)
+- Affichage des températures (soufflage, reprise, etc.)
+- Programmation horaire de fonctionnement (ajout, suppression, affichage)
+- Affichage du tableau de tendances (historique des valeurs)
+- Affichage du graphique des tendances (courbes)
+
+## Onglet Distribution Chaud
+- Visualisation de l’état général (ON/OFF)
+- Contrôle des pompes (ON/OFF pour chaque réseau)
+- Réglage des consignes de température (générale et par réseau)
+- Contrôle des vannes 3 voies (slider)
+- Affichage des températures départ/retour par réseau
+- Affichage du débit
+- Programmation horaire de fonctionnement
+- Affichage du graphique des tendances Chaud
+- Historique des actions et valeurs
+
+## Onglet Conforts
+- Réglage de la consigne de température
+- Sélection de la vitesse de ventilation (basse, normal, boost)
+- Sélection du mode (auto, manuel)
+- Application des réglages
+- Affichage de la température mesurée
+- Historique des réglages appliqués
+
+## Onglet Compteurs
+- Affichage des consommations (électricité, eau, gaz)
+- Sélection de la période (jour, semaine, mois, année)
+- Rafraîchissement des données
+- Affichage du graphique des consommations
+- Affichage du tableau de consommation par période
+- Export des historiques au format CSV/Excel
+
+## Onglet Éclairages
+- Sélection de la zone à contrôler
+- Affichage et réglage du lux mesuré et de la consigne
+- Application des réglages
+- Contrôle ON/OFF de l’éclairage par zone
+- Programmation horaire d’allumage/extinction
+- Historique des horaires appliqués
+
+## Onglet Météo
+- Affichage des données météo simulées (température, humidité, vent)
+- Actualisation des données
+
+## Onglet Alarmes
+- Affichage de la liste des alarmes actives
+- Acquittement des alarmes
+- Historique des alarmes
+- Filtres par type, date, état
+
+## Onglet Événements
+- Affichage de l’historique des événements système et utilisateurs
+- Filtrage par utilisateur ou mot-clé
+- Export de l’historique au format CSV
+
+## Onglet Gestion des utilisateurs
+- Affichage de la liste des utilisateurs
+- Ajout, modification, suppression d’utilisateurs (CRUD)
+- Attribution des rôles (admin, opérateur, invité)
+- Réinitialisation du mot de passe
+
+## Fonctionnalités transverses
+- Authentification sécurisée (login/password)
+- Gestion des droits d’accès selon le rôle
+- Navigation par sidebar
+- Notifications et messages d’erreur
+- Persistance des données via localStorage
+- Interface responsive (adaptée PC/tablette/mobile)
