@@ -77,4 +77,3 @@ Ce prototype démontre la faisabilité d'une solution de supervision GTB entièr
 **Hamad Ali Abdourazak**
 
 ## Licence
-Ce projet a été développé dans un cadre pédagogique et professionnel.
