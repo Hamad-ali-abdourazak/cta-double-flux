@@ -1,7 +1,7 @@
 # Plateforme de Supervision GTB
 
 ## Description
-Application web de supervision pour la Gestion Technique du Bâtiment (GTB), développée dans le cadre d'un stage chez GESTION ENERGIE SYSTEMES. Cette application permet la visualisation et le contrôle en temps réel d'équipements techniques de bâtiment.
+Cette application permet la visualisation et le contrôle en temps réel d'équipements techniques de bâtiment.
 
 ## Fonctionnalités principales
 
