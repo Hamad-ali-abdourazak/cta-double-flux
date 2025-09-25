@@ -1,4 +1,4 @@
-# Application de Supervision GTB - CTA Double Flux
+# Plateforme de Supervision GTB
 
 ## Description
 Application web de supervision pour la Gestion Technique du Bâtiment (GTB), développée dans le cadre d'un stage chez GESTION ENERGIE SYSTEMES. Cette application permet la visualisation et le contrôle en temps réel d'équipements techniques de bâtiment.
@@ -35,8 +35,8 @@ Application web de supervision pour la Gestion Technique du Bâtiment (GTB), dé
 
 1. **Cloner le projet**
    ```bash
-   git clone https://github.com/Hamad-ali-abdourazak/cta-double-flux.git
-   cd cta-double-flux
+   git clone https://github.com/Hamad-ali-abdourazak/plateforme-supervision-gtb.git
+   cd plateforme-supervision-gtb
    ```
 
 2. **Lancer l'application**
@@ -50,7 +50,7 @@ Application web de supervision pour la Gestion Technique du Bâtiment (GTB), dé
 
 ## Structure du projet
 ```
-cta-double-flux/
+plateforme-supervision-gtb/
 ├── index.html                     # Interface principale
 ├── login.html                     # Page de connexion
 ├── app.js                         # Logique applicative
