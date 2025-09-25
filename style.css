@@ -1,7 +1,30 @@
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(120deg, #e3f2fd 0%, #f8fafc 100%);
+  background: #f8fafc;
   min-height: 100vh;
+}
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1976d2 80%, #1565c0 100%);
+  box-shadow: 2px 0 12px #0001;
+  transition: width 0.2s;
+}
+.sidebar-header img {
+  border: 3px solid #fff;
+}
+.nav-link.active, .nav-link:hover {
+  background: #1565c0 !important;
+  color: #fff !important;
+  border-radius: 0.5rem;
+  transition: background 0.2s;
+}
+main, .flex-grow-1.p-4 {
+  background: #fff;
+  border-radius: 1rem;
+  min-height: 95vh;
+  box-shadow: 0 2px 16px #0001;
+  transition: box-shadow 0.2s;
 }
 h1 {
   margin: 30px 0 20px 0;
@@ -10,19 +33,20 @@ h1 {
   font-weight: 700;
   letter-spacing: 1px;
 }
-#controls {
-  margin: 20px auto 0 auto;
-  max-width: 900px;
-  background: #fff;
+h2 {
+    font-size: 1.5rem;
+    color: #444;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 8px;
+    margin-top: 2rem;
+}
+.badge {
+  font-size: 1.1em;
+  margin-right: 10px;
+}
+.card {
   border-radius: 12px;
   box-shadow: 0 2px 12px #0001;
-  padding: 20px 30px 10px 30px;
-}
-.slider-group {
-  margin: 10px 0;
-}
-#horaire {
-  margin-top: 10px;
 }
 .horaire-list {
   margin-top: 10px;
@@ -32,7 +56,7 @@ h1 {
 .horaire-list li {
   background: #f3f6fa;
   border-left: 4px solid #1976d2;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   padding: 8px 12px;
   font-size: 1.1em;
   color: #222;
@@ -45,14 +69,7 @@ h1 {
 .horaire-list li .icon {
   font-size: 1.2em;
   color: #1976d2;
-}
-canvas {
-  background: #fff;
-  border: 1px solid #ccc;
-  display: block;
-  margin: 0 auto 20px auto;
-  border-radius: 10px;
-  box-shadow: 0 2px 12px #0001;
+  margin-right: 4px;
 }
 .trend {
   max-width: 900px;
@@ -61,4 +78,46 @@ canvas {
   border-radius: 12px;
   box-shadow: 0 2px 12px #0001;
   padding: 20px 30px 20px 30px;
+}
+.table th, .table td {
+  vertical-align: middle;
+}
+input[type="range"] {
+  width: 120px;
+  vertical-align: middle;
+}
+input[type="number"], select.form-select {
+  display: inline-block;
+  vertical-align: middle;
+}
+#cta-status {
+  font-size: 1.1em;
+  margin-left: 10px;
+}
+#ctaCanvas {
+  background: #e3eafc;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px #0002;
+  margin-bottom: 20px;
+  display: block;
+}
+.alert-info {
+  font-size: 1em;
+  margin-top: 10px;
+}
+.text-center img {
+  background: #fff;
+}
+.list-group-item {
+  font-size: 0.98em;
+}
+#toast-container .toast {
+  min-width: 220px;
+  opacity: 0.97;
+  font-size: 1em;
+}
+@media (max-width: 900px) {
+  .sidebar { width: 100px; padding: 1rem 0.2rem; }
+  .sidebar-header { font-size: 1.2rem; }
+  main, .flex-grow-1.p-4 { padding: 1rem; }
 }

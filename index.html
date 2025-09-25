@@ -1,185 +1,500 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <style>
+    .btn-action {
+      font-size: 1.1rem;
+      font-weight: 500;
+      border-radius: 1.5rem;
+      padding: 0.5rem 1.5rem;
+      margin: 0 0.5rem;
+      border: none;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 8px #0001;
+      outline: none;
+    }
+    .btn-action.start {
+      background: #43e97b;
+      color: #222;
+    }
+    .btn-action.stop {
+      background: #e53935;
+      color: #fff;
+    }
+    .btn-action:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-action:hover:not(:disabled) {
+      filter: brightness(1.08);
+      box-shadow: 0 4px 16px #0002;
+    }
+  </style>
   <meta charset="UTF-8">
-  <title>CTA Double Flux</title>
+  <title>Supervision CTA Pro</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons CDN -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
+  <div id="toast-container" style="position:fixed; bottom:20px; right:20px; z-index:9999;"></div>
+
   <div class="d-flex">
-    <!-- Sidebar moderne -->
     <nav id="sidebarMenu" class="d-flex flex-column flex-shrink-0 p-3 text-white bg-primary shadow" style="width: 260px; min-height: 100vh;">
-      <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <span class="fs-4 fw-bold">Supervision</span>
-      </a>
-      <hr>
+      <span class="fs-4 fw-bold mb-4">Supervision</span>
       <ul class="nav nav-pills flex-column mb-auto">
-        <li class="nav-item mb-1">
-          <a href="#" id="tab-cta" class="nav-link active text-white" aria-current="page">
-            <i class="bi bi-wind"></i> CTA
-          </a>
-        </li>
-        <li class="nav-item mb-1">
-          <a href="#" id="tab-conforts" class="nav-link text-white">
-            <i class="bi bi-fan"></i> Conforts (Ventilo-convecteur)
-          </a>
-        </li>
-        <li class="nav-item mb-1">
-          <a href="#" class="nav-link text-white">
-            <i class="bi bi-speedometer2"></i> Compteurs
-          </a>
-        </li>
-        <li class="nav-item mb-1">
-          <a href="#" class="nav-link text-white">
-            <i class="bi bi-lightbulb"></i> Eclairages
-          </a>
-        </li>
-        <li class="nav-item mb-1">
-          <a href="#" class="nav-link text-white">
-            <i class="bi bi-cloud-sun"></i> Station météo
-          </a>
-        </li>
-        <li class="nav-item mb-1">
-          <a href="#" class="nav-link text-white">
-            <i class="bi bi-bell"></i> Alarmes
-          </a>
-        </li>
-        <li class="nav-item mb-1">
-          <a href="#" class="nav-link text-white">
-            <i class="bi bi-calendar-event"></i> Evènements
-          </a>
-        </li>
-        <li class="nav-item mb-1">
-          <a href="#" class="nav-link text-white">
-            <i class="bi bi-fire"></i> Distribution chaud
-          </a>
-        </li>
+        <li><a href="#" id="tab-cta" class="nav-link text-white active"><i class="bi bi-wind"></i> CTA</a></li>
+        <li><a href="#" id="tab-conforts" class="nav-link text-white"><i class="bi bi-fan"></i> Conforts</a></li>
+        <li><a href="#" id="tab-compteurs" class="nav-link text-white"><i class="bi bi-speedometer2"></i> Compteurs</a></li>
+        <li><a href="#" id="tab-eclairages" class="nav-link text-white"><i class="bi bi-lightbulb"></i> Éclairages</a></li>
+        <li><a href="#" id="tab-meteo" class="nav-link text-white"><i class="bi bi-cloud-sun"></i> Météo</a></li>
+        <li><a href="#" id="tab-alarmes" class="nav-link text-white"><i class="bi bi-bell"></i> Alarmes <span id="alarmes-badge" class="badge rounded-pill bg-danger ms-2" style="display: none;">0</span></a></li>
+        <li><a href="#" id="tab-evenements" class="nav-link text-white"><i class="bi bi-calendar-event"></i> Événements</a></li>
+        <li><a href="#" id="tab-chaud" class="nav-link text-white"><i class="bi bi-fire"></i> Distribution chaud</a></li>
+        <li><a href="#" id="tab-users" class="nav-link text-white"><i class="bi bi-people"></i> Gestion utilisateurs</a></li>
       </ul>
       <hr>
       <div class="text-white-50 small">© 2025</div>
     </nav>
 
-    <!-- Contenu principal -->
     <div class="flex-grow-1 p-4">
-      <!-- Onglet CTA -->
       <div id="content-cta">
-        <h1>CTA Double Flux - Vue Graphique</h1>
-        <div class="text-center mb-4" style="position: relative; width: fit-content; margin: 0 auto;">
-          <img src="https://www.abcclim.net/images/stories/imagesite/cta-double-flux-2019.png"
-               alt="Schéma CTA double flux"
-               style="max-width: 100%; height: auto; border: 2px solid #1976d2; border-radius: 10px; box-shadow: 0 2px 12px #0001;">
-          <!-- Badges dynamiques -->
-          <span id="badge-air-neuf" class="badge bg-primary"
-                style="position: absolute; left: 10%; top: 60%; font-size:1.1em;">
-            Air Neuf : -- °C
-          </span>
-          <span id="badge-air-souffle" class="badge bg-success"
-                style="position: absolute; left: 75%; top: 60%; font-size:1.1em;">
-            Air Soufflé : -- °C
-          </span>
-          <span id="badge-air-repris" class="badge bg-danger"
-                style="position: absolute; left: 75%; top: 20%; font-size:1.1em;">
-            Air Repris : -- °C
-          </span>
-          <!-- Légendes des composants -->
-          <span class="badge bg-secondary"
-                style="position: absolute; left: 5%; top: 80%; font-size:0.95em;">
-            Filtre Air Neuf
-          </span>
-          <span class="badge bg-secondary"
-                style="position: absolute; left: 38%; top: 35%; font-size:0.95em;">
-            Echangeur
-          </span>
-          <span class="badge bg-secondary"
-                style="position: absolute; left: 60%; top: 80%; font-size:0.95em;">
-            Filtre Air Repris
-          </span>
-          <span class="badge bg-secondary"
-                style="position: absolute; left: 18%; top: 70%; font-size:0.95em;">
-            Ventilateur Soufflage
-          </span>
-          <span class="badge bg-secondary"
-                style="position: absolute; left: 68%; top: 70%; font-size:0.95em;">
-            Ventilateur Extraction
-          </span>
-        </div>
-        <div id="controls">
-          <div class="slider-group">
-            <label>Moteur soufflage/reprise (0-10V) :
-              <input type="range" id="moteur" min="0" max="10" step="0.1" value="5">
-              <span id="moteurVal">5</span> V
-            </label>
+        <div class="card p-4 mb-4">
+          <h1 style="font-size:1.5rem; font-weight:600; text-align:center;">CTA Double Flux <span id="cta-status" class="badge bg-danger align-middle">OFF</span></h1>
+          <div class="mb-3 text-center">
+            <button id="cta-start" class="btn-action start">Démarrer</button>
+            <button id="cta-stop" class="btn-action stop">Éteindre</button>
           </div>
-          <div class="slider-group">
-            <label>Vanne chaude :
-              <input type="range" id="vanneChaude" min="0" max="100" step="1" value="0">
-              <span id="vanneChaudeVal">0</span> %
-            </label>
-            <label style="margin-left:30px;">Vanne froide :
-              <input type="range" id="vanneFroide" min="0" max="100" step="1" value="0">
-              <span id="vanneFroideVal">0</span> %
-            </label>
+          <div class="text-center mb-4">
+            <img src="https://www.abcclim.net/images/stories/imagesite/cta-double-flux-2019.png"
+                 style="max-width: 100%; height: auto; border: 2px solid #1976d2; border-radius: 10px; box-shadow: 0 2px 12px #0001;">
+            <div class="mt-3">
+              <span id="badge-air-neuf" class="badge bg-primary"></span>
+              <span id="badge-air-souffle" class="badge bg-success"></span>
+              <span id="badge-air-repris" class="badge bg-danger"></span>
+            </div>
+            <div class="mt-4 d-flex justify-content-center flex-wrap gap-4">
+              <div class="p-2 card">
+                <div>Moteur soufflage 0-10V</div>
+                <input type="range" min="0" max="10" value="5" id="slider-moteur">
+                <span id="val-moteur">5</span>
+              </div>
+              <div class="p-2 card">
+                <div>Vanne Chaude</div>
+                <input type="range" min="0" max="100" value="0" id="slider-vanne-chaude">
+                <span id="val-vanne-chaude">0</span> %
+              </div>
+              <div class="p-2 card">
+                <div>Vanne Froide</div>
+                <input type="range" min="0" max="100" value="0" id="slider-vanne-froide">
+                <span id="val-vanne-froide">0</span> %
+              </div>
+            </div>
           </div>
-          <button id="btnTendances" class="btn btn-primary btn-sm">Afficher Tendances</button>
-          <button id="btnHoraire" class="btn btn-secondary btn-sm">Programmer Horaire</button>
-          <div id="horaire" style="margin-top:15px;"></div>
-          <!-- Horloge intégrée pour la programmation horaire -->
-          <div id="horaireInline" style="margin-top:15px; display:none;">
-            <label>Début : <input type="time" id="heureDebutInline" required></label>
-            <label style="margin-left:20px;">Fin : <input type="time" id="heureFinInline" required></label>
-            <button id="ajouterHoraire" class="btn btn-success btn-sm" style="margin-left:20px;">Ajouter</button>
+          <div class="mt-4">
+            <button id="btnHoraire" class="btn btn-outline-primary btn-sm">Programmer un horaire</button>
+            <div id="horaireInline" style="margin-top:15px; display:none;">
+              <select id="jourInline" class="form-select form-select-sm mb-1" style="width:auto;display:inline-block;">
+                <option value="">Jour</option>
+                <option>Lundi</option><option>Mardi</option><option>Mercredi</option>
+                <option>Jeudi</option><option>Vendredi</option><option>Samedi</option><option>Dimanche</option>
+              </select>
+              <input id="heureDebutInline" type="time" class="form-control form-control-sm mb-1" style="width:auto;display:inline-block;">
+              <input id="heureFinInline" type="time" class="form-control form-control-sm mb-1" style="width:auto;display:inline-block;">
+              <button id="ajouterHoraire" class="btn btn-success btn-sm ms-2">Ajouter</button>
+              <button id="annulerHoraire" class="btn btn-secondary btn-sm ms-2">Annuler</button>
+            </div>
+            <div id="horaire" class="mt-2"></div>
+            <style>
+              #horaire .btn-delete-horaire { float: right; margin-left: 10px; }
+            </style>
           </div>
-        </div>
-        <!-- Tableau Bootstrap pour tendances -->
-        <div class="trend" id="trend" style="display:none; margin-top:30px;">
-          <h3>Tendances Températures (10 dernières valeurs)</h3>
-          <div class="table-responsive">
-            <table class="table table-striped table-bordered align-middle">
-              <thead class="table-primary">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Air Neuf (°C)</th>
-                  <th scope="col">Air Soufflé (°C)</th>
-                  <th scope="col">Air Repris (°C)</th>
-                </tr>
-              </thead>
-              <tbody id="trendTableBody"></tbody>
-            </table>
+          <div class="mt-4">
+            <button id="btnTendances" class="btn btn-outline-secondary btn-sm">Afficher les 10 dernières tendances</button>
+            <div id="trend" class="trend card mt-2" style="display:none; max-width:900px; margin-left:0;">
+              <div class="card-header">Tendances CTA <button id="btnFermerTendances" class="btn btn-sm btn-outline-secondary float-end">Fermer</button></div>
+              <div class="card-body">
+                <table class="table table-sm">
+                  <thead><tr><th>#</th><th>Air Neuf</th><th>Soufflé</th><th>Repris</th></tr></thead>
+                  <tbody id="trendTableBody"></tbody>
+                </table>
+              </div>
+            </div>
           </div>
-          <button id="btnFermerTendances" class="btn btn-outline-secondary btn-sm">Fermer</button>
+          <div class="mt-4">
+            <h2>Graphique des tendances CTA</h2>
+            <canvas id="chart-cta" style="max-width:900px; height: 400px;"></canvas>
+          </div>
         </div>
       </div>
-      <!-- Onglet Ventilo-convecteur -->
       <div id="content-conforts" style="display:none;">
-        <h1>Ventilo-convecteur - Conforts</h1>
-        <div class="card shadow-sm mb-4" style="max-width:600px;">
-          <div class="card-body">
-            <h5 class="card-title"><i class="bi bi-fan"></i> Réglage Ventilo-convecteur</h5>
-            <div class="mb-3">
-              <label for="vc-vitesse" class="form-label">Vitesse ventilateur</label>
-              <select id="vc-vitesse" class="form-select" style="max-width:200px;">
-                <option value="1">1 (Lente)</option>
-                <option value="2">2 (Moyenne)</option>
-                <option value="3">3 (Rapide)</option>
+        <div class="card p-4 mb-4">
+          <h1>Conforts</h1>
+          <div class="mb-3">
+            <label>Consigne (°C) : <input id="vc-consigne" type="number" value="21" min="16" max="26" class="form-control d-inline-block" style="width:80px;"></label>
+            <label class="ms-3">Vitesse :
+              <select id="vc-vitesse" class="form-select d-inline-block" style="width:100px;">
+                <option>Basse</option><option>Normal</option><option>Boost</option>
               </select>
-            </div>
-            <div class="mb-3">
-              <label for="vc-consigne" class="form-label">Consigne température (°C)</label>
-              <input type="number" id="vc-consigne" class="form-control" min="16" max="30" value="22" style="max-width:120px;">
-            </div>
-            <button class="btn btn-primary" id="vc-appliquer">Appliquer</button>
+            </label>
+            <label class="ms-3">Mode :
+              <select id="vc-mode" class="form-select d-inline-block" style="width:120px;">
+                <option>Auto</option><option>Manuel</option>
+              </select>
+            </label>
+            <button id="vc-appliquer" class="btn btn-success ms-3">Appliquer</button>
+          </div>
+          <div class="mb-2">Température mesurée : <span id="vc-temp-mesure">--</span> °C</div>
+          <div id="vc-resultat" class="alert alert-success" style="display:none;"></div>
+          <div class="mt-3">
+            <b>Historique :</b>
+            <ul id="vc-history" class="list-group mt-2"></ul>
           </div>
         </div>
-        <div id="vc-resultat" class="alert alert-info" style="display:none; max-width:600px;"></div>
+      </div>
+      <div id="content-compteurs" style="display:none;">
+        <div class="card p-4 mb-4">
+          <h1>Compteurs</h1>
+          <div class="mb-3">
+            <button id="refresh-compteurs" class="btn btn-outline-primary btn-sm">Rafraîchir</button>
+            <button id="show-daily" class="btn btn-outline-secondary btn-sm ms-2 active">Jour</button>
+            <button id="show-weekly" class="btn btn-outline-secondary btn-sm ms-2">Semaine</button>
+            <button id="show-monthly" class="btn btn-outline-secondary btn-sm ms-2">Mois</button>
+            <button id="show-yearly" class="btn btn-outline-secondary btn-sm ms-2">Année</button>
+            <button id="export-compteurs" class="btn btn-outline-secondary btn-sm ms-2">Exporter Excel</button>
+          </div>
+          <div class="mb-2">Électricité : <span id="compteur-elec">--</span> kWh</div>
+          <div class="mb-2">Eau : <span id="compteur-eau">--</span> m³</div>
+          <div class="mb-2">Gaz : <span id="compteur-gaz">--</span> m³</div>
+          <div class="mt-3">
+            <h2>Graphique des consommations</h2>
+            <canvas id="chart-compteurs" style="max-width:900px; height:400px;"></canvas>
+          </div>
+          <div class="mt-4">
+            <h3 id="table-title">Consommation journalière</h3>
+            <table class="table table-bordered table-sm" style="max-width: 900px;">
+              <thead>
+                <tr>
+                  <th>Période</th>
+                  <th>Électricité (kWh)</th>
+                  <th>Eau (m³)</th>
+                  <th>Gaz (m³)</th>
+                </tr>
+              </thead>
+              <tbody id="period-consumption-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="content-eclairages" style="display:none;">
+        <div class="card p-4 mb-4">
+          <h1>Éclairages</h1>
+          <div class="mb-3">
+            <label>Zone :
+              <select id="zone-eclairage" class="form-select d-inline-block" style="width:120px;">
+                <option>Salle 1</option><option>Salle 2</option><option>Bureau</option>
+              </select>
+            </label>
+            <label class="ms-3">Lux mesuré : <input id="lux-mesure" type="number" value="300" min="0" max="2000" class="form-control d-inline-block" style="width:90px;"></label>
+            <label class="ms-3">Consigne : <input id="lux-consigne" type="number" value="400" min="0" max="2000" class="form-control d-inline-block" style="width:90px;"></label>
+            <button id="eclairage-appliquer" class="btn btn-success ms-3">Appliquer</button>
+          </div>
+          <div class="mb-2">État : <span id="eclairage-etat">--</span></div>
+          <div class="mb-2">
+            <button id="eclairage-on" class="btn btn-outline-primary btn-sm">Allumer</button>
+            <button id="eclairage-off" class="btn btn-outline-secondary btn-sm">Éteindre</button>
+          </div>
+          <div class="mt-4">
+            <button id="btnHoraireEclairage" class="btn btn-outline-primary btn-sm">Programmer un horaire</button>
+            <div id="horaireEclairageInline" style="margin-top:15px; display:none;">
+              <select id="jourEclairageInline" class="form-select form-select-sm mb-1" style="width:auto;display:inline-block;">
+                <option value="">Jour</option>
+                <option>Lundi</option><option>Mardi</option><option>Mercredi</option>
+                <option>Jeudi</option><option>Vendredi</option><option>Samedi</option><option>Dimanche</option>
+              </select>
+              <input id="heureDebutEclairageInline" type="time" class="form-control form-control-sm mb-1" style="width:auto;display:inline-block;">
+              <input id="heureFinEclairageInline" type="time" class="form-control form-control-sm mb-1" style="width:auto;display:inline-block;">
+              <button id="ajouterHoraireEclairage" class="btn btn-success btn-sm ms-2">Ajouter</button>
+              <button id="annulerHoraireEclairage" class="btn btn-secondary btn-sm ms-2">Annuler</button>
+            </div>
+            <div id="horairesEclairage" class="mt-2"></div>
+          </div>
+          <div id="eclairage-resultat" class="alert alert-success" style="display:none;"></div>
+          <div class="mt-3">
+            <b>Historique :</b>
+            <ul id="eclairage-history" class="list-group mt-2"></ul>
+          </div>
+        </div>
+      </div>
+      <div id="content-meteo" style="display:none;">
+        <div class="card p-4 mb-4">
+          <h1>Météo</h1>
+          <div class="mb-3">
+            <button id="refresh-meteo" class="btn btn-outline-primary btn-sm">Rafraîchir</button>
+          </div>
+          <div class="mb-2">Température : <span id="meteo-temp">--</span> °C</div>
+          <div class="mb-2">Humidité : <span id="meteo-hum">--</span> %</div>
+          <div class="mb-2">Vent : <span id="meteo-vent">--</span> km/h</div>
+          <div class="mb-2">Pression : <span id="meteo-pression">--</span> hPa</div>
+          <div class="mb-2">Tendance : <span id="meteo-tendance">--</span> <span id="meteo-icone"></span></div>
+          <div class="mt-3">
+            <h2>Graphique des tendances météo</h2>
+            <canvas id="chart-meteo" style="max-width:900px; height:400px;"></canvas>
+          </div>
+          <div class="mt-3">
+            <b>Historique :</b>
+            <ul id="meteo-history" class="list-group mt-2"></ul>
+          </div>
+        </div>
+      </div>
+      <div id="content-alarmes" style="display:none;">
+        <div class="card p-4 mb-4">
+          <h1>Alarmes</h1>
+          <div class="mb-2">
+            <button id="filtre-toutes" class="btn btn-outline-primary btn-sm active">Toutes</button>
+            <button id="filtre_presentes" class="btn btn-outline-primary btn-sm ms-2">Présentes</button>
+            <button id="filtre_non_acquittees" class="btn btn-outline-primary btn-sm ms-2">Non-acquittées</button>
+            <button id="acquitter-toutes" class="btn btn-outline-success btn-sm ms-2">Tout acquitter</button>
+            <button id="refresh-alarmes" class="btn btn-outline-primary btn-sm ms-2"><i class="bi bi-arrow-clockwise"></i> Rafraîchir</button>
+          </div>
+          <table class="table table-bordered align-middle" style="max-width:900px;">
+            <thead class="table-light">
+              <tr>
+                <th>Icône</th>
+                <th>Libellé</th>
+                <th>Niveau</th>
+                <th>Présence</th>
+                <th>Acquittée</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="liste-alarmes"></tbody>
+          </table>
+          <div class="card mt-3" style="max-width:900px;">
+            <div class="card-header">Historique des acquittements
+              <button id="export-alarmes-history" class="btn btn-outline-secondary btn-sm float-end"><i class="bi bi-download"></i> Exporter CSV</button>
+            </div>
+            <ul class="list-group list-group-flush" id="alarmes-history"></ul>
+          </div>
+          <div class="mt-3">
+            <h2>Répartition des alarmes</h2>
+            <canvas id="chart-alarmes" style="max-width:400px; height:400px; margin: auto;"></canvas>
+          </div>
+        </div>
+      </div>
+      <div id="content-evenements" style="display:none;">
+        <div class="card p-4 mb-4">
+          <h1>Événements</h1>
+          <form id="form-ajout-evenement" class="mb-3">
+            <input id="input-evenement" class="form-control d-inline-block" style="width:300px;" placeholder="Nouvel événement..." required>
+            <select id="input-type-evenement" class="form-select d-inline-block" style="width:150px;">
+              <option value="info">Info</option>
+              <option value="alerte">Alerte</option>
+              <option value="action">Action</option>
+              <option value="securite">Sécurité</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="anomalie">Anomalie</option>
+            </select>
+            <button class="btn btn-primary ms-2">Ajouter</button>
+          </form>
+          <div class="mb-2 d-flex justify-content-between align-items-center">
+            <div>
+              <label>Filtrer par type : </label>
+              <select id="evenement-filtre" class="form-select d-inline-block" style="width:150px;">
+                <option value="all">Tous</option>
+                <option value="info">Info</option>
+                <option value="alerte">Alerte</option>
+                <option value="action">Action</option>
+                <option value="securite">Sécurité</option>
+                <option value="maintenance">Maintenance</option>
+                <option value="anomalie">Anomalie</option>
+              </select>
+              <label class="ms-3">Filtrer par source : </label>
+              <select id="evenement-source" class="form-select d-inline-block" style="width:150px;">
+                <option value="all">Toutes</option>
+                <option value="cta">CTA</option>
+                <option value="eclairages">Éclairages</option>
+                <option value="compteurs">Compteurs</option>
+                <option value="alarmes">Alarmes</option>
+                <option value="meteo">Météo</option>
+                <option value="chaud">Distribution chaud</option>
+                <option value="conforts">Conforts</option>
+                <option value="exploitation">Exploitation</option>
+                <option value="manuel">Manuel</option>
+              </select>
+              <label class="ms-3">Filtrer par utilisateur : </label>
+              <select id="evenement-user-filter" class="form-select d-inline-block" style="width:150px;">
+                <option value="all">Tous</option>
+                <option value="admin">admin</option>
+                <option value="operateur">operateur</option>
+                <option value="invite">invite</option>
+                <option value="Système">Système</option>
+                <option value="thermostat">thermostat</option>
+              </select>
+              <input id="evenement-search" type="text" class="form-control d-inline-block ms-2" style="width:200px;" placeholder="Rechercher un mot-clé...">
+            </div>
+            <button id="export-evenements-history" class="btn btn-outline-secondary btn-sm"><i class="bi bi-download"></i> Exporter CSV</button>
+          </div>
+          <ul id="liste-evenements" class="list-group mt-2"></ul>
+        </div>
+      </div>
+      <div id="content-chaud" style="display:none;">
+        <div class="card p-4 mb-4">
+          <h1>Distribution chaud <span id="chaud-status" class="badge bg-danger">OFF</span></h1>
+          <div class="mb-3 text-center">
+            <button id="chaud-start" class="btn-action start">Démarrer</button>
+            <button id="chaud-stop" class="btn-action stop">Éteindre</button>
+          </div>
+          <!-- AJOUT image et consigne générale -->
+          <div class="text-center mb-4">
+            <img src="image_distribution_chaud.png" alt="Distribution chaud" style="max-width: 500px; width: 100%; height: auto; border: 2px solid #1976d2; border-radius: 10px; box-shadow: 0 2px 12px #0001;">
+          </div>
+          <div class="mb-3 text-center">
+            <label for="consigne-general-chaud" class="form-label fw-bold">Consigne générale (°C) :</label>
+            <input type="number" id="consigne-general-chaud" class="form-control d-inline-block w-auto" value="70" min="40" max="90">
+            <button id="valider-consigne-general-chaud" class="btn btn-success ms-2">Valider</button>
+            <span id="resultat-consigne-general-chaud" class="ms-3 text-success fw-bold" style="display:none;">Consigne appliquée !</span>
+          </div>
+          <div class="row g-4 mt-4">
+            <div class="col-md-4">
+              <div class="card p-3 h-100">
+                <h3 class="card-title">Réseau 1 (Régulé)</h3>
+                <div class="mb-3">
+                  <label class="form-label">Consigne Départ (°C):</label>
+                  <input type="number" id="consigne-chaud-1" value="70" min="40" max="90" class="form-control d-inline-block w-auto">
+                </div>
+                <div class="mb-2">
+                  Température Départ: <span id="depart-chaud-1" class="fw-bold">--</span> °C
+                </div>
+                <div class="mb-2">
+                  Température Retour: <span id="retour-chaud-1" class="fw-bold">--</span> °C
+                </div>
+                <div class="mb-2">
+                  <div class="d-flex justify-content-between">
+                    <div>Vanne 3 voies:</div>
+                    <div><span id="vanne-chaud-1-val">0</span> %</div>
+                  </div>
+                  <input type="range" min="0" max="100" value="0" id="vanne-chaud-1-slider" class="form-range">
+                </div>
+                <div class="form-check form-switch mt-2">
+                  <input class="form-check-input" type="checkbox" role="switch" id="pompe-chaud-1">
+                  <label class="form-check-label" for="pompe-chaud-1">Pompe <span id="pompe-chaud-1-etat">OFF</span></label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card p-3 h-100">
+                <h3 class="card-title">Réseau 2 (Régulé)</h3>
+                <div class="mb-3">
+                  <label class="form-label">Consigne Départ (°C):</label>
+                  <input type="number" id="consigne-chaud-2" value="65" min="40" max="90" class="form-control d-inline-block w-auto">
+                </div>
+                <div class="mb-2">
+                  Température Départ: <span id="depart-chaud-2" class="fw-bold">--</span> °C
+                </div>
+                <div class="mb-2">
+                  Température Retour: <span id="retour-chaud-2" class="fw-bold">--</span> °C
+                </div>
+                <div class="mb-2">
+                  <div class="d-flex justify-content-between">
+                    <div>Vanne 3 voies:</div>
+                    <div><span id="vanne-chaud-2-val">0</span> %</div>
+                  </div>
+                  <input type="range" min="0" max="100" value="0" id="vanne-chaud-2-slider" class="form-range">
+                </div>
+                <div class="form-check form-switch mt-2">
+                  <input class="form-check-input" type="checkbox" role="switch" id="pompe-chaud-2">
+                  <label class="form-check-label" for="pompe-chaud-2">Pompe <span id="pompe-chaud-2-etat">OFF</span></label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card p-3 h-100">
+                <h3 class="card-title">Réseau 3 (Débit constant)</h3>
+                <div class="mb-2">
+                  Température Départ: <span id="depart-chaud-3" class="fw-bold">--</span> °C
+                </div>
+                <div class="mb-2">
+                  Température Retour: <span id="retour-chaud-3" class="fw-bold">--</span> °C
+                </div>
+                <div class="mb-2">
+                  Débit: <span id="debit-chaud-3" class="fw-bold">--</span> m³/h
+                </div>
+                <div class="form-check form-switch mt-2">
+                  <input class="form-check-input" type="checkbox" role="switch" id="pompe-chaud-3">
+                  <label class="form-check-label" for="pompe-chaud-3">Pompe <span id="pompe-chaud-3-etat">OFF</span></label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="mb-2">Pression générale : <span id="chaud-pression">--</span> bar</div>
+            <div class="mb-2">Température de la chaufferie : <span id="chaud-temp-chaufferie">--</span> °C</div>
+            <div class="mb-2">Température extérieure : <span id="chaud-temp-ext">--</span> °C</div>
+          </div>
+          <div class="mt-4">
+            <h2>Graphique des tendances Chaud</h2>
+            <canvas id="chart-chaud" style="max-width:900px; height:400px;"></canvas>
+          </div>
+          <div class="mt-3">
+            <b>Historique :</b>
+            <ul id="chaud-history" class="list-group mt-2"></ul>
+          </div>
+        </div>
+      </div>
+      <div id="content-users" style="display:none;">
+        <div class="card p-4 mb-4">
+          <h1>Gestion des utilisateurs</h1>
+          <div class="mb-3">
+            <button id="add-user-btn" type="button" class="btn btn-success mb-2"><i class="bi bi-person-plus"></i> Ajouter un utilisateur</button>
+          </div>
+          <table class="table table-bordered table-sm" style="max-width: 700px;">
+            <thead>
+              <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Rôle</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-table-body"></tbody>
+          </table>
+        </div>
+  <div class="modal fade" id="userModal" tabindex="0" aria-labelledby="userModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="userModalLabel">Ajouter/Modifier un utilisateur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="user-form">
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" class="form-control" id="username" required>
+                  </div>
+                  <div class="mb-3">
+                    <label for="password" class="form-label">Mot de passe</label>
+                    <input type="password" class="form-control" id="password" autocomplete="new-password">
+                  </div>
+                  <div class="mb-3">
+                    <label for="role" class="form-label">Rôle</label>
+                    <select class="form-select" id="role" required>
+                      <option value="admin">Admin</option>
+                      <option value="operateur">Opérateur</option>
+                      <option value="invite">Invité</option>
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <script src="app.js"></script>
-  <!-- Bootstrap JS pour le responsive -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
